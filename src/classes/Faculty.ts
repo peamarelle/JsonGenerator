@@ -2,10 +2,10 @@ import { IFaculty } from "@/interfaces/IFaculty";
 
 export class Faculty implements IFaculty {
     title: string;
-    carreras: any[];
+    Carreras: any[];
 
     constructor(_title: string, _carreras: any[]) {
         this.title = _title;
-        this.carreras = _carreras;
+        this.Carreras = _carreras;
     }
 }

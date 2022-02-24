@@ -15,6 +15,8 @@ import { University } from "../classes/University";
 import { IUniversity } from "../interfaces/IUniversity";
 import { IFaculty } from "../interfaces/IFaculty";
 import { Faculty } from "../classes/Faculty";
+import { ICaree } from "../interfaces/ICaree";
+import { Caree } from "../classes/Carees";
 
 export default class Conversor extends Vue {
   public title = "conversor";
@@ -42,50 +44,42 @@ export default class Conversor extends Vue {
   parseFile(sheet: string[]): Array<IUniversity> {
     let universities: IUniversity[] = [];
 
-    sheet.forEach(([carrera, universidad, facultad, provincia]: string) => {
+    sheet.forEach(([caree, university, faculty, department]: string) => {
       //checkeo si la universidad existe y obtengo su posición en el array
       let position: number = universities.findIndex(
-        (university: IUniversity) =>
-          university["title"] === universidad &&
-          university["provincia"] === provincia
+        (u: IUniversity) =>
+          u["title"] === university &&
+          u["provincia"] === department
       );
       if (position !== -1) {
         let u: IUniversity = universities[position];
-        //checkeo si la facultad actual pertenece a la universidad
-        let index = u["facultades"].findIndex(
-          (f: IFaculty) => f["title"] === facultad
+        //checkeo si la facultad actual pertenece a la university
+        let index = u["Facultades"].findIndex(
+          (f: IFaculty) => f["title"] === faculty
         );
         if (index !== -1) {
           //se fija la carrera y si no esta la agrega
-          let isINCarreesArray: boolean = u["facultades"][index][
-            "carreras"
-          ].some((c: { [key: string]: string }) => c["title"] === carrera);
+          let isINCarreesArray: boolean = u["Facultades"][index][
+            "Carreras"
+          ].some((c: ICaree) => c["title"] === caree);
           if (!isINCarreesArray) {
-            u["facultades"][index]["carreras"].push({ title: carrera });
+            u["Facultades"][index]["Carreras"].push(new Caree(caree));
           }
         }
         //si facultad no existe la crea
         if (index === -1)
-          u["facultades"].push(
-            new Faculty(facultad, this.createCarees(carrera))
+          u["Facultades"].push(
+            new Faculty(faculty, [ new Caree(caree) ])
           );
       }
       //si la universidad no existe la crea
       if (position === -1) {
         universities.push(
-          new University(universidad, provincia, [new Faculty(facultad, this.createCarees(carrera))])
+          new University(university, department, [new Faculty(faculty, [ new Caree(caree) ])])
         );
       }
     });
     return universities;
-  }
-
-  createCarees(carrera: string): Array<any> {
-    return [
-      {
-        title: carrera,
-      },
-    ];
   }
 }
 </script>

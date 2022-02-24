@@ -1,4 +1,5 @@
+import { ICaree } from "./ICaree";
 export interface IFaculty {
     title: string;
-    carreras: any[];
+    Carreras: ICaree[];
 }
